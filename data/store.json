@@ -2,30 +2,147 @@
   "locations": [
     {
       "city": "西安市",
-      "latitude": 34.1241752488573,
-      "longitude": 108.82396968196826,
-      "timestamp": "2026-04-19T08:08:59.228Z"
+      "latitude": 34.124199129182436,
+      "longitude": 108.82395017233164,
+      "timestamp": "2026-04-19T08:42:52.618Z"
     },
     {
       "city": "西安市",
-      "latitude": 34.12423734282668,
-      "longitude": 108.82399154553764,
-      "timestamp": "2026-04-19T08:07:37.473Z"
+      "latitude": 34.12418369708551,
+      "longitude": 108.82396182005476,
+      "timestamp": "2026-04-19T08:36:00.230Z"
     },
     {
       "city": "西安市",
-      "latitude": 34.124113788059816,
-      "longitude": 108.82391721484191,
-      "timestamp": "2026-04-19T07:45:15.403Z"
+      {
+        "locations": [],
+        "snapshots": []
+      }
+      "pm25": 18.5,
+      "pm10": 97,
+      "updatedAt": "2026-04-19T08:47:36.851Z"
+    },
+    {
+      "city": "北京市",
+      "latitude": 39.910924547299565,
+      "longitude": 116.4133836971231,
+      "temperature": 13,
+      "humidity": 69,
+      "aqi": 74,
+      "pm25": 25.71,
+      "pm10": 97.14,
+      "updatedAt": "2026-04-19T08:47:19.817Z"
     },
     {
       "city": "西安市",
-      "latitude": 34.124127292409895,
-      "longitude": 108.82395867128017,
-      "timestamp": "2026-04-19T07:40:27.970Z"
-    }
-  ],
-  "snapshots": [
+      "latitude": 34.34726881662395,
+      "longitude": 108.94646555063274,
+      "temperature": 19,
+      "humidity": 50,
+      "aqi": 500,
+      "pm25": 233.6,
+      "pm10": 905.2,
+      "updatedAt": "2026-04-19T08:46:09.560Z"
+    },
+    {
+      "city": "西安市",
+      "latitude": 34.34726881662395,
+      "longitude": 108.94646555063274,
+      "temperature": 19,
+      "humidity": 50,
+      "aqi": 500,
+      "pm25": 233.6,
+      "pm10": 905.2,
+      "updatedAt": "2026-04-19T08:46:09.300Z"
+    },
+    {
+      "city": "西安市",
+      "latitude": 34.34726881662395,
+      "longitude": 108.94646555063274,
+      "temperature": 19,
+      "humidity": 50,
+      "aqi": 500,
+      "pm25": 233.6,
+      "pm10": 905.2,
+      "updatedAt": "2026-04-19T08:46:09.099Z"
+    },
+    {
+      "city": "辽源市",
+      "latitude": 42.933308420624584,
+      "longitude": 125.15537330312809,
+      "temperature": 24,
+      "humidity": 17,
+      "aqi": 74,
+      "pm25": 18.5,
+      "pm10": 97,
+      "updatedAt": "2026-04-19T08:45:58.657Z"
+    },
+    {
+      "city": "辽源市",
+      "latitude": 42.933308420624584,
+      "longitude": 125.15537330312809,
+      "temperature": 24,
+      "humidity": 17,
+      "aqi": 74,
+      "pm25": 18.5,
+      "pm10": 97,
+      "updatedAt": "2026-04-19T08:45:49.702Z"
+    },
+    {
+      "city": "辽源市",
+      "latitude": 42.933308420624584,
+      "longitude": 125.15537330312809,
+      "temperature": 24,
+      "humidity": 17,
+      "aqi": 74,
+      "pm25": 18.5,
+      "pm10": 97,
+      "updatedAt": "2026-04-19T08:45:49.254Z"
+    },
+    {
+      "city": "北京市",
+      "latitude": 39.910924547299565,
+      "longitude": 116.4133836971231,
+      "temperature": 13,
+      "humidity": 68,
+      "aqi": 74,
+      "pm25": 25.71,
+      "pm10": 97.14,
+      "updatedAt": "2026-04-19T08:44:00.955Z"
+    },
+    {
+      "city": "北京市",
+      "latitude": 39.910924547299565,
+      "longitude": 116.4133836971231,
+      "temperature": 13,
+      "humidity": 68,
+      "aqi": 74,
+      "pm25": 25.71,
+      "pm10": 97.14,
+      "updatedAt": "2026-04-19T08:43:51.141Z"
+    },
+    {
+      "city": "西安市",
+      "latitude": 34.124199129182436,
+      "longitude": 108.82395017233164,
+      "temperature": 17,
+      "humidity": 47,
+      "aqi": 500,
+      "pm25": 252,
+      "pm10": 1203,
+      "updatedAt": "2026-04-19T08:42:53.947Z"
+    },
+    {
+      "city": "西安市",
+      "latitude": 34.12418369708551,
+      "longitude": 108.82396182005476,
+      "temperature": 17,
+      "humidity": 49,
+      "aqi": 500,
+      "pm25": 252,
+      "pm10": 1203,
+      "updatedAt": "2026-04-19T08:36:01.578Z"
+    },
     {
       "city": "西安市",
       "latitude": 34.1241752488573,

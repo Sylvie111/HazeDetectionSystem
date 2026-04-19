@@ -2,3 +2,10 @@ node_modules/
 .env
 npm-debug.log*
 .DS_Store
+dist/
+.idea/
+*.iml
+android/.gradle/
+android/local.properties
+android/app/build/
+android/build/

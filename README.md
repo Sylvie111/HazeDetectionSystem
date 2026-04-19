@@ -1,53 +1,37 @@
 # 雾霾探测系统
 
-这是一个面向手机端展示的雾霾探测系统原型，按题目要求覆盖了四个核心点：
+一个面向手机端的雾霾探测系统，已支持 Web 访问和 Android 原生壳（Capacitor）运行。
 
-- 定位城市并保存到服务器，同时在客户端显示
-- 动态显示天气和空气质量指数
-- 根据城市查询天气详情和 AQI，并在服务器端保存
-- 提供实验报告模板
+## 题目要求覆盖
 
-## 当前实现
+- 定位城市保存到服务器并在客户端显示
+- 动态展示天气和空气质量指数（AQI）
+- 根据定位城市拉取天气详情与空气质量并保存到服务器
+- 实验报告输出（见 `report.md`）
 
-- 前端：HTML5、CSS3、JavaScript，适配手机屏幕
-- 后端：Node.js、Express
-- 数据存储：JSON 文件模拟服务器持久化
-- 数据展示：当前城市、温度、湿度、AQI、趋势图、出行建议
+## 当前技术栈
 
-## 和题目要求的对应关系
+- 前端：HTML5 + CSS3 + JavaScript（响应式页面）
+- 后端：Node.js + Express
+- 原生壳：Capacitor + Android
+- 定位与地理编码：百度地图 API
+- 天气与空气质量：和风天气 API（含 `/airquality/v1/current/{lat}/{lon}`）
 
-- 定位功能：浏览器定位获取经纬度，服务器保存定位记录，客户端同步显示城市信息
-- 界面设计：首页包含天气卡片、AQI 卡片、趋势图和智能建议，适合手机展示
-- 天气详情和 AQI：当前版本已接入可运行的数据接口，接口层已预留为可替换的第三方天气源
-- 完成报告：已提供 `report.md`
+## 快速运行（Web）
 
-## 你需要做什么
-
-如果老师要求源码里必须明确出现百度地图、百度天气或和风天气，请你补以下内容：
-
-1. 在项目根目录创建 `.env`，参考 `.env.example` 填入百度控制台信息。
-2. 准备定位接口的 API Key，例如百度地图 AK。
-3. 准备天气和 AQI 的接口 Key，例如百度天气或和风天气的 AppKey。
-4. 将 `server.js` 里的天气源和定位源替换成你们课程允许的官方接口。
-5. 把 `report.md` 中的数据来源改成你最终提交时实际使用的接口名称。
-
-如果课程更看重“功能完整、界面完整、可运行演示”，当前版本已经满足定位、天气、AQI、图表和报告四项要求，可以直接展示。
-
-## 运行方式
-
-1. 安装依赖：
+1. 安装依赖
 
 ```bash
 npm install
 ```
 
-2. 启动服务：
+2. 启动后端
 
 ```bash
 npm start
 ```
 
-3. 浏览器打开：
+3. 浏览器访问
 
 ```text
 http://localhost:3000
@@ -57,15 +41,46 @@ http://localhost:3000
 
 - `GET /api/health`：健康检查
 - `POST /api/location`：保存定位城市
-- `GET /api/overview`：获取天气、AQI、建议和趋势图数据
+- `GET /api/overview`：返回天气、AQI、建议与趋势数据
 - `GET /api/history`：查询历史快照
 
-## 实现说明
+## 环境变量
 
-- 定位优先使用浏览器地理位置。
-- 服务器会保存定位记录和天气快照。
-- 天气与 AQI 接口不可用时，会自动回退到本地模拟数据，保证页面可演示。
-- 如果你需要严格换成百度地图、百度天气或和风天气，只要替换 `server.js` 中对应的第三方接口调用即可。
-- `server.js` 会自动读取项目根目录下的 `.env`，里面可以写百度应用类型、AK 和 IP 白名单。
-- 你现在这组和风天气凭据已经写入 `.env`，字段名是 `HEWEATHER_APP_ID`、`HEWEATHER_API_KEY` 和 `HEWEATHER_CREDENTIAL_NAME`。
-- 和风天气如果返回 `Invalid Host` 或 `No permission`，通常是控制台里还没有把天气实况、空气质量和天气预报等 API 授权到当前凭据。
+参考 `.env.example`，常用字段如下：
+
+- `BAIDU_AK`：百度地图 AK
+- `HEWEATHER_API_KEY`：和风天气 API Key
+- `HEWEATHER_API_HOST`：和风专属 Host
+
+## 原生 App（Android）
+
+1. 配置 App 请求后端地址
+
+- 编辑 `public/config.js`
+- 设置 `window.HAZE_API_BASE`，例如：
+
+```js
+window.HAZE_API_BASE = 'http://10.198.217.172:3000';
+```
+
+2. 同步 Web 资源到原生工程
+
+```bash
+npm run cap:sync
+```
+
+3. 打开 Android Studio
+
+```bash
+npm run cap:android
+```
+
+4. 连接真机运行或构建 APK/AAB
+
+完整流程见 `APK_BUILD_CHECKLIST.md`。
+
+## 发布前说明
+
+- `dist/` 为构建产物，已加入忽略规则
+- `.env` 已被忽略，不会进入仓库
+- 每次改动前端后需要重新执行 `npm run cap:sync`

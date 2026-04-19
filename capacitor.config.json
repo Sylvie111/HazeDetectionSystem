@@ -1,0 +1,8 @@
+{
+  "appId": "com.sylvie.hazedetection",
+  "appName": "HazeDetectionSystem",
+  "webDir": "dist",
+  "android": {
+    "allowMixedContent": true
+  }
+}

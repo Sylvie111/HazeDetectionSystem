@@ -3,7 +3,8 @@ const $ = (selector) => document.querySelector(selector);
 const state = {
   location: null,
   overview: null,
-  clockTimer: null
+  clockTimer: null,
+  apiBase: ''
 };
 
 const els = {
@@ -164,9 +165,22 @@ async function fetchJson(url, options) {
   return data;
 }
 
+function normalizeApiBase(base) {
+  const cleaned = (base || '').trim();
+  if (!cleaned) {
+    return '';
+  }
+  return cleaned.endsWith('/') ? cleaned.slice(0, -1) : cleaned;
+}
+
+function apiUrl(path, params) {
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const query = params ? `?${new URLSearchParams(params).toString()}` : '';
+  return `${state.apiBase}${normalizedPath}${query}`;
+}
+
 async function loadOverview(params) {
-  const query = new URLSearchParams(params);
-  const overview = await fetchJson(`/api/overview?${query.toString()}`);
+  const overview = await fetchJson(apiUrl('/api/overview', params));
   setBasicInfo(overview);
   renderChart(overview);
   showToast(`已更新 ${overview.location.city}`);
@@ -186,7 +200,7 @@ async function loadFromGeolocation() {
         state.location = { latitude, longitude };
 
         try {
-          const location = await fetchJson('/api/location', {
+          const location = await fetchJson(apiUrl('/api/location'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ latitude, longitude })
@@ -223,6 +237,7 @@ els.cityForm.addEventListener('submit', async (event) => {
 });
 
 async function bootstrap() {
+  state.apiBase = normalizeApiBase(window.HAZE_API_BASE || localStorage.getItem('HAZE_API_BASE') || '');
   startClock();
   try {
     await loadFromGeolocation();
