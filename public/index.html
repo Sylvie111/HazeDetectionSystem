@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>雾霾探测系统</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero card">
+        <div class="hero__copy">
+          <span class="eyebrow">Haze Detection System</span>
+          <h1>出行前先看天气和 AQI</h1>
+          <p>定位城市、同步空气质量、生成出行建议，适合移动端实验展示。</p>
+        </div>
+        <form id="city-form" class="searchbar">
+          <input id="city-input" type="text" placeholder="输入城市，例如 北京 / Shanghai" />
+          <button type="submit">查询城市</button>
+        </form>
+      </section>
+
+      <section class="status-row">
+        <article class="card status-card accent-city">
+          <span>当前城市</span>
+          <strong id="city-name">等待定位</strong>
+          <small id="city-meta">尚未获取位置</small>
+        </article>
+        <article class="card status-card accent-time">
+          <span>更新时间</span>
+          <strong id="clock">--:--</strong>
+          <small id="source-label">数据来源：--</small>
+        </article>
+      </section>
+
+      <section class="metrics-grid">
+        <article class="card metric-card">
+          <span>温度</span>
+          <strong id="temperature">--</strong>
+          <small>体感 <em id="feels-like">--</em></small>
+        </article>
+        <article class="card metric-card">
+          <span>湿度</span>
+          <strong id="humidity">--</strong>
+          <small>风速 <em id="wind-speed">--</em></small>
+        </article>
+        <article class="card metric-card metric-card--aqi">
+          <span>AQI</span>
+          <strong id="aqi-value">--</strong>
+          <small id="aqi-level">--</small>
+        </article>
+      </section>
+
+      <section class="card insight-card">
+        <div>
+          <span>智能建议</span>
+          <p id="advice">定位后将自动给出出行建议。</p>
+        </div>
+        <div class="trend-pill" id="trend-pill">趋势：--</div>
+      </section>
+
+      <section class="card chart-card">
+        <div class="section-head">
+          <div>
+            <span>天气趋势</span>
+            <h2>温度 / 湿度 折线图</h2>
+          </div>
+          <small id="chart-note">未来 8 小时</small>
+        </div>
+        <div id="chart" class="chart"></div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
