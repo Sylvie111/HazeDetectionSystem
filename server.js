@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -50,6 +51,7 @@ const qweatherConfig = {
 globalThis.__BAIDU_CONFIG__ = baiduConfig;
 
 app.use(express.json());
+app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 async function ensureStore() {

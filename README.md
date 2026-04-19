@@ -60,8 +60,13 @@ http://localhost:3000
 - 设置 `window.HAZE_API_BASE`，例如：
 
 ```js
-window.HAZE_API_BASE = 'http://10.198.217.172:3000';
+window.HAZE_API_BASE = 'http://10.0.2.2:3000';
 ```
+
+说明：
+
+- Android 模拟器访问电脑本机后端使用 `10.0.2.2`。
+- 真机调试使用电脑局域网 IP，例如 `http://10.198.217.172:3000`。
 
 2. 同步 Web 资源到原生工程
 
