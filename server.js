@@ -49,6 +49,16 @@ const qweatherConfig = {
 
 globalThis.__BAIDU_CONFIG__ = baiduConfig;
 
+app.use((request, response, next) => {
+  response.header('Access-Control-Allow-Origin', '*');
+  response.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  response.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (request.method === 'OPTIONS') {
+    return response.sendStatus(204);
+  }
+  next();
+});
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -441,7 +451,7 @@ app.get('*', (_, response) => {
   response.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(port, async () => {
+app.listen(port, '0.0.0.0', async () => {
   await ensureStore();
-  console.log(`HazeDetectionSystem is running at http://localhost:${port}`);
+  console.log(`HazeDetectionSystem is running at http://0.0.0.0:${port}`);
 });

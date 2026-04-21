@@ -6,6 +6,15 @@ const state = {
   clockTimer: null
 };
 
+// For Android USB debugging, use adb reverse with this local address.
+const DEFAULT_API_BASE_URL = 'http://127.0.0.1:3000';
+
+const runtime = {
+  isNativeApp: Boolean(window.Capacitor?.isNativePlatform?.()),
+  geolocationPlugin: window.Capacitor?.Plugins?.Geolocation || null,
+  apiBaseUrl: resolveApiBaseUrl()
+};
+
 const els = {
   cityName: $('#city-name'),
   cityMeta: $('#city-meta'),
@@ -25,6 +34,39 @@ const els = {
   cityInput: $('#city-input'),
   chartNote: $('#chart-note')
 };
+
+function resolveApiBaseUrl() {
+  const native = Boolean(window.Capacitor?.isNativePlatform?.());
+  const query = new URLSearchParams(window.location.search);
+  const queryBase = query.get('apiBase');
+  const savedBase = window.localStorage.getItem('haze.apiBaseUrl');
+  const base = (queryBase || (native ? DEFAULT_API_BASE_URL : '') || savedBase || DEFAULT_API_BASE_URL || '').trim();
+  if (!base) {
+    return '';
+  }
+  const normalized = base.replace(/\/+$/, '');
+  window.localStorage.setItem('haze.apiBaseUrl', normalized);
+  return normalized;
+}
+
+function withApiBase(path) {
+  if (!runtime.apiBaseUrl) {
+    return path;
+  }
+  return `${runtime.apiBaseUrl}${path}`;
+}
+
+function isValidOverviewPayload(payload) {
+  return Boolean(
+    payload &&
+      payload.location &&
+      typeof payload.location.city === 'string' &&
+      payload.weather &&
+      payload.airQuality &&
+      payload.timeline &&
+      Array.isArray(payload.timeline.labels)
+  );
+}
 
 function showToast(message) {
   els.toast.textContent = message;
@@ -156,55 +198,83 @@ function renderChart(overview) {
 }
 
 async function fetchJson(url, options) {
-  const response = await fetch(url, options);
-  const data = await response.json().catch(() => ({}));
+  const requestUrl = withApiBase(url);
+  let response;
+  try {
+    response = await fetch(requestUrl, options);
+  } catch (error) {
+    throw new Error(`网络请求失败：${requestUrl}（${error.message}）`);
+  }
+  const contentType = response.headers.get('content-type') || '';
+  const data = contentType.includes('application/json') ? await response.json().catch(() => ({})) : {};
   if (!response.ok) {
-    throw new Error(data.message || `Request failed: ${response.status}`);
+    throw new Error(data.message || `请求失败：${response.status} ${requestUrl}`);
   }
   return data;
 }
 
+async function getDevicePosition() {
+  if (runtime.isNativeApp && runtime.geolocationPlugin) {
+    const permission = await runtime.geolocationPlugin.checkPermissions();
+    if (permission.location !== 'granted') {
+      await runtime.geolocationPlugin.requestPermissions();
+    }
+    return runtime.geolocationPlugin.getCurrentPosition({
+      enableHighAccuracy: true,
+      timeout: 8000
+    });
+  }
+
+  if (!navigator.geolocation) {
+    throw new Error('geolocation not supported');
+  }
+
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => resolve(position),
+      (error) => reject(error),
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+  });
+}
+
 async function loadOverview(params) {
+  if (runtime.isNativeApp && !runtime.apiBaseUrl) {
+    throw new Error('App 未配置后端地址，请在 URL 参数中设置 apiBase。');
+  }
+
   const query = new URLSearchParams(params);
   const overview = await fetchJson(`/api/overview?${query.toString()}`);
+  if (!isValidOverviewPayload(overview)) {
+    throw new Error('未获取到有效天气数据，请检查后端地址和服务状态。');
+  }
   setBasicInfo(overview);
   renderChart(overview);
   showToast(`已更新 ${overview.location.city}`);
 }
 
 async function loadFromGeolocation() {
-  if (!navigator.geolocation) {
-    showToast('当前浏览器不支持定位，改用城市搜索。');
-    return;
+  try {
+    const position = await getDevicePosition();
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    state.location = { latitude, longitude };
+
+    try {
+      const location = await fetchJson('/api/location', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ latitude, longitude })
+      });
+      state.location.city = location.location.city;
+      await loadOverview({ latitude, longitude });
+    } catch (error) {
+      showToast(`定位更新失败：${error.message}`);
+    }
+  } catch {
+    const message = runtime.isNativeApp ? '请在系统设置中打开定位权限。' : '定位已拒绝，请手动输入城市。';
+    showToast(message);
   }
-
-  return new Promise((resolve) => {
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        state.location = { latitude, longitude };
-
-        try {
-          const location = await fetchJson('/api/location', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ latitude, longitude })
-          });
-          state.location.city = location.location.city;
-          await loadOverview({ latitude, longitude });
-        } catch (error) {
-          showToast(`定位更新失败：${error.message}`);
-        }
-        resolve();
-      },
-      () => {
-        showToast('定位已拒绝，请手动输入城市。');
-        resolve();
-      },
-      { enableHighAccuracy: true, timeout: 8000 }
-    );
-  });
 }
 
 els.cityForm.addEventListener('submit', async (event) => {
@@ -224,6 +294,10 @@ els.cityForm.addEventListener('submit', async (event) => {
 
 async function bootstrap() {
   startClock();
+  if (runtime.isNativeApp) {
+    const base = runtime.apiBaseUrl || '(未配置)';
+    showToast(`App 接口地址：${base}`);
+  }
   try {
     await loadFromGeolocation();
   } catch (error) {

@@ -52,6 +52,46 @@ npm start
 http://localhost:3000
 ```
 
+## 打包 Android App（Capacitor）
+
+1. 准备可访问的后端地址（推荐 HTTPS），例如：
+
+```text
+https://your-api-domain.com
+```
+
+2. 在手机 App 首次启动时通过 URL 参数设置接口前缀（会自动保存到本地）：
+
+```text
+file:///android_asset/public/index.html?apiBase=https://your-api-domain.com
+```
+
+也可以在 Web 调试阶段使用：
+
+```text
+http://localhost:3000/?apiBase=https://your-api-domain.com
+```
+
+3. 同步前端资源到 Android 工程：
+
+```bash
+npm run cap:sync
+```
+
+4. 使用 Android Studio 打开原生工程并运行：
+
+```bash
+npm run cap:open
+```
+
+5. 在 Android Studio 中连接真机或启动模拟器，然后点击 Run 进行安装调试。
+
+## 什么是 Android Studio
+
+- Android Studio 是 Google 官方的 Android 开发 IDE。
+- Capacitor 会生成一个 `android` 原生工程，最终需要在 Android Studio 中编译、签名、打包 APK/AAB。
+- 你平时改网页代码；每次改完执行 `npm run cap:sync`，再回 Android Studio 运行即可。
+
 ## 接口说明
 
 - `GET /api/health`：健康检查
